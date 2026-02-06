@@ -3,12 +3,16 @@ using UnityEngine;
 public class BubbleMovement : MonoBehaviour
 {
     [Header("Movement Parameters")]
-    [SerializeField] private float pushForce = 20f;
-    [SerializeField] private float maxDistance = 5f;
+    [SerializeField] private float pushForce;
+    [SerializeField] private float maxDistance;
     [SerializeField] private AnimationCurve distanceForceCurve;
+    
+    [Header("Config")]
+    [SerializeField] private BubbleAnimations bubbleAnimations;
 
     private Rigidbody2D _rigidbody;
     private Camera _camera;
+    private Vector2 _mouseWorldPos;
 
     private void Awake()
     {
@@ -21,21 +25,22 @@ public class BubbleMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             ApplyPush();
+            bubbleAnimations.PlayWaveAnimation(_mouseWorldPos);
         }
     }
 
     private void ApplyPush()
     {
-        Vector2 mouseWorldPos = GetMouseWorldPosition();
-        Vector2 direction = (mouseWorldPos - (Vector2)transform.position).normalized;
+        _mouseWorldPos = GetMouseWorldPosition();
+        Vector2 direction = (_mouseWorldPos - (Vector2)transform.position).normalized;
 
-        float distance = Vector2.Distance(mouseWorldPos, transform.position);
+        float distance = Vector2.Distance(_mouseWorldPos, transform.position);
         float forceMultiplier = CalculateDistanceMultiplier(distance);
 
         if (forceMultiplier <= 0f)
             return;
 
-        Vector2 force = -direction * pushForce * forceMultiplier;
+        Vector2 force = -direction * (pushForce * forceMultiplier);
         _rigidbody.AddForce(force, ForceMode2D.Impulse);
     }
 
