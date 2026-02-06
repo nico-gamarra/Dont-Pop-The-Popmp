@@ -221,7 +221,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1af90ed02c52a6f4e8cf16cc90d271c2, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 1af90ed02c52a6f4e8cf16cc90d271c2, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -453,25 +453,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cc21a7c56d7d644e8c3fd1c1d3cf25b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textoTiempo: {fileID: 903616263}
-  textoPuntuacion: {fileID: 1846863519}
-  textoNota: {fileID: 658443858}
-  puntuacionPorBurbuja: 100
-  tiempoPuntos: 3
-  tiempoPuntosBurbujas: 0.75
-  puntuacionS: 6000
-  puntuacionA: 4900
-  puntuacionB: 4100
-  puntuacionC: 3400
-  puntuacionD: 2300
-  puntuacionE: 800
-  burbuja1: {fileID: 920587650}
-  burbuja2: {fileID: 538909946}
-  burbuja3: {fileID: 554927033}
+  timeText: {fileID: 903616263}
+  scoreText: {fileID: 1846863519}
+  gradeText: {fileID: 658443858}
+  pointsPerBubble: 0
+  pointCountDuiration: 3
+  bubblePointCountDuration: 0.75
+  levelGrades: {fileID: 11400000, guid: c4ef9c2d4ae69454e99b4debff7256c6, type: 2}
+  bubble1: {fileID: 920587650}
+  bubble2: {fileID: 538909946}
+  bubble3: {fileID: 554927033}
   filledBubble: {fileID: -1288585845, guid: 10b720b62239a8d4aa22ef0f632208e4, type: 3}
   goldenBubble: {fileID: 21300000, guid: 5c3c9d172750e574ebd534d436e63ea7, type: 3}
-  audioBurbuja: {fileID: 2088010272}
-  audioPuntos: {fileID: 180263979}
+  bubbleSound: {fileID: 0}
+  pointsSound: {fileID: 0}
 --- !u!1 &528088215
 GameObject:
   m_ObjectHideFlags: 0
@@ -1782,7 +1777,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 4c03eb02e66a43845a8ea5dc2f0a60ba, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 4c03eb02e66a43845a8ea5dc2f0a60ba, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.5

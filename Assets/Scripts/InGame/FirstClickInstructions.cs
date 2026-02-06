@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class instrucciones : MonoBehaviour
+public class firstClickInstructions : MonoBehaviour
 {
     void Update()
     {

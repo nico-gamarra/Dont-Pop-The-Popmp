@@ -9,7 +9,7 @@ public class BackgroundAttemptCounter : MonoBehaviour
     private void Start()
     {
         attemptText = GetComponent<TextMeshProUGUI>();
-        int attempts = PlayerPrefs.GetInt("CantidadIntentos", 0);
+        int attempts = PlayerPrefs.GetInt("Attempts", 0);
         attemptText.text = "ATTEMPTS: " + attempts.ToString();
     }
 }
