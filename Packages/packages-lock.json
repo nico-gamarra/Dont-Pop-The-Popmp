@@ -14,13 +14,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.aseprite": {
-      "version": "2.0.2",
-      "depth": 1,
+      "version": "1.1.10",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.2d.common": "11.0.1",
+        "com.unity.2d.common": "6.0.6",
         "com.unity.2d.sprite": "1.0.0",
-        "com.unity.2d.tilemap": "1.0.0",
         "com.unity.mathematics": "1.2.6",
         "com.unity.modules.animation": "1.0.0"
       },
@@ -86,8 +85,8 @@
       }
     },
     "com.unity.2d.tilemap.extras": {
-      "version": "5.0.1",
-      "depth": 1,
+      "version": "4.1.0",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.2d.tilemap": "1.0.0",
@@ -107,16 +106,17 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.cinemachine": {
-      "version": "3.1.2",
+      "version": "3.1.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.splines": "2.0.0"
+        "com.unity.splines": "2.0.0",
+        "com.unity.modules.imgui": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "2.10.0",
+      "version": "2.10.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -152,12 +152,12 @@
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.2d.spriteshape": "12.0.1",
         "com.unity.2d.tilemap": "1.0.0",
-        "com.unity.2d.tilemap.extras": "5.0.1",
-        "com.unity.2d.aseprite": "2.0.2"
+        "com.unity.2d.tilemap.extras": "4.1.0",
+        "com.unity.2d.aseprite": "1.1.10"
       }
     },
     "com.unity.ide.rider": {
-      "version": "3.0.38",
+      "version": "3.0.39",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -166,11 +166,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.25",
+      "version": "2.0.27",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.test-framework": "1.1.31"
+        "com.unity.test-framework": "1.1.33"
       },
       "url": "https://packages.unity.com"
     },
@@ -185,7 +185,7 @@
     },
     "com.unity.mathematics": {
       "version": "1.3.2",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -206,11 +206,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.render-pipelines.core": {
-      "version": "17.2.0",
+      "version": "17.0.4",
       "depth": 1,
       "source": "builtin",
       "dependencies": {
-        "com.unity.burst": "1.8.14",
+        "com.unity.burst": "1.8.20",
         "com.unity.mathematics": "1.3.2",
         "com.unity.ugui": "2.0.0",
         "com.unity.collections": "2.4.3",
@@ -221,12 +221,12 @@
       }
     },
     "com.unity.render-pipelines.universal": {
-      "version": "17.2.0",
+      "version": "17.0.4",
       "depth": 0,
       "source": "builtin",
       "dependencies": {
-        "com.unity.render-pipelines.core": "17.2.0",
-        "com.unity.shadergraph": "17.2.0",
+        "com.unity.render-pipelines.core": "17.0.4",
+        "com.unity.shadergraph": "17.0.4",
         "com.unity.render-pipelines.universal-config": "17.0.3"
       }
     },
@@ -263,11 +263,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.shadergraph": {
-      "version": "17.2.0",
+      "version": "17.0.4",
       "depth": 1,
       "source": "builtin",
       "dependencies": {
-        "com.unity.render-pipelines.core": "17.2.0",
+        "com.unity.render-pipelines.core": "17.0.4",
         "com.unity.searcher": "4.9.3"
       }
     },
@@ -303,7 +303,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.8.9",
+      "version": "1.8.10",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -324,7 +324,7 @@
       }
     },
     "com.unity.visualscripting": {
-      "version": "1.9.8",
+      "version": "1.9.9",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -481,8 +481,7 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.hierarchycore": "1.0.0",
-        "com.unity.modules.physics": "1.0.0"
+        "com.unity.modules.hierarchycore": "1.0.0"
       }
     },
     "com.unity.modules.umbra": {

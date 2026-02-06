@@ -1,9 +1,7 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MovimientoBurbuja : MonoBehaviour
+public class MovimientoBurbuja1 : MonoBehaviour
 {
     [Header("Parametros de movimiento")]
     [SerializeField] private float pushForce = 10f; // Magnitud de la fuerza aplicada al empujar
