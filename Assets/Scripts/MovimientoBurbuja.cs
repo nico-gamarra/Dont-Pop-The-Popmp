@@ -1,5 +1,3 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,15 +6,15 @@ public class MovimientoBurbuja : MonoBehaviour
     [Header("Parametros de movimiento")]
     [SerializeField] private float pushForce = 10f; // Magnitud de la fuerza aplicada al empujar
     [SerializeField] private float rotationSpeed = 1f; // Velocidad de rotacion de la burbuja
-    [SerializeField] private float maxSpeed = 15f; // Velocidad máxima de la burbuja
-    [SerializeField] private float maxRotation = 10f; // Rotación máxima de la burbuja
-    [SerializeField] private float maxDistance = 8f; // Distancia máxima en que el click tiene efecto
+    [SerializeField] private float maxSpeed = 15f; // Velocidad mï¿½xima de la burbuja
+    [SerializeField] private float maxRotation = 10f; // Rotaciï¿½n mï¿½xima de la burbuja
+    [SerializeField] private float maxDistance = 8f; // Distancia mï¿½xima en que el click tiene efecto
     [SerializeField] private float waterResistance = 2f; // Resistencia del agua
     [SerializeField] private float gravedad = -0.05f; // Fuerza con la que sube la burbuja
 
     [Header("Cooldowns")]
     [SerializeField] private float delay = 0.01f;
-    [SerializeField] private float clickCooldown = 0.2f;
+    [SerializeField] private float clickCooldown = 0.4f;
     [SerializeField] private float timerCooldown = 0;
 
     private bool isWaiting = false;
@@ -34,7 +32,7 @@ public class MovimientoBurbuja : MonoBehaviour
 
     [SerializeField] private GameObject prefabMasCien;
 
-    private OndaClick scriptCamara;
+    private WaveClick scriptCamara;
     private int currentSize = 1;
     private bool movable = true;
     private Rigidbody2D burbuja;
@@ -51,7 +49,7 @@ public class MovimientoBurbuja : MonoBehaviour
             animator.enabled = false;
         }
 
-        scriptCamara = Camera.main.GetComponent<OndaClick>();
+        scriptCamara = Camera.main.GetComponent<WaveClick>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         burbuja = GetComponent<Rigidbody2D>();
         burbujaCollider = GetComponent<CircleCollider2D>();
@@ -76,13 +74,13 @@ public class MovimientoBurbuja : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && movable && paused == 0 && timerCooldown <= 0)
         {
             timerCooldown = clickCooldown;
-            scriptCamara.SpawnPrefabAtCursor();
+            //scriptCamara.SpawnPrefabAtCursor();
 
-            // Obtener la posición del clic
+            // Obtener la posiciï¿½n del clic
             Vector3 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             clickPosition.z = 0f;
 
-            // Obtener la posición actual del objeto
+            // Obtener la posiciï¿½n actual del objeto
             Vector3 objectPosition = transform.position;
 
             direction = objectPosition - clickPosition;
@@ -108,13 +106,13 @@ public class MovimientoBurbuja : MonoBehaviour
                 }
         }
 
-        // Limitar la velocidad máxima
+        // Limitar la velocidad mï¿½xima
         if (burbuja.linearVelocity.magnitude > maxSpeed)
         {
             burbuja.linearVelocity = burbuja.linearVelocity.normalized * maxSpeed;
         }
 
-        // Limitar la velocidad de rotación máxima
+        // Limitar la velocidad de rotaciï¿½n mï¿½xima
         if (burbuja.angularVelocity > maxRotation)
         {
             burbuja.angularVelocity = maxRotation;
