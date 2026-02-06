@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,154 +6,140 @@ using UnityEngine.UI;
 
 public class Score : MonoBehaviour
 {
-    [Header("Configuración")]
-    [SerializeField] private TMP_Text textoTiempo;     // Texto para mostrar el tiempo total
-    [SerializeField] private TMP_Text textoPuntuacion; // Texto para mostrar la puntuación final
-    [SerializeField] private TMP_Text textoNota;       // Texto para la nota final
-    [SerializeField] private int puntuacionPorBurbuja; // Puntos por cada burbuja obtenida
-    [SerializeField] private float tiempoPuntos = 3f;       // Tiempo total en el que debe sumarse el puntaje
-    [SerializeField] private float tiempoPuntosBurbujas = 0.75f;
+    [Header("Config")] [SerializeField] private TMP_Text timeText; // 0 - 99... s
+    [SerializeField] private TMP_Text scoreText; // 0 - 99... pts
+    [SerializeField] private TMP_Text gradeText; // S, A, B...
+    [SerializeField] private int pointsPerBubble; // Puntos por cada burbuja obtenida
+    [SerializeField] private float pointCountDuiration = 3f;
+    [SerializeField] private float bubblePointCountDuration = 0.75f;
 
-    [Header("Notas")]
-    private int puntuacionS = 6000;
-    private int puntuacionA = 4900;
-    private int puntuacionB = 4100;
-    private int puntuacionC = 3400;
-    private int puntuacionD = 2300;
-    private int puntuacionE = 800;
+    [Header("Grades")] 
+    [SerializeField] private LevelGrading levelGrades;
 
-    [Header("Burbujas")]
-    [SerializeField] private Image burbuja1;
-    [SerializeField] private Image burbuja2;
-    [SerializeField] private Image burbuja3;
-    private Image[] burbujas;
+    [Header("Bubbles")]
+    [SerializeField] private Image bubble1;
+    [SerializeField] private Image bubble2;
+    [SerializeField] private Image bubble3;
+    private Image[] bubblesImages;
     [SerializeField] private Sprite filledBubble;
     [SerializeField] private Sprite goldenBubble;
 
-    [Header("Audio")]
-    [SerializeField] private AudioSource audioBurbuja;
-    [SerializeField] private AudioSource audioPuntos;
+    [Header("Sound")]
+    [SerializeField] private AudioSource bubbleSound;
+    [SerializeField] private AudioSource pointsSound;
 
-    private int puntuacionFinal;
-    private float tiempoTotal;
-    private bool botonesHabilitados = false;
+    private int finalScore;
+    private float finalTime;
+    private bool enableButtons = false;
 
     private void Awake()
     {
-        burbujas = new Image[] { burbuja1, burbuja2, burbuja3 };
+        bubblesImages = new Image[] { bubble1, bubble2, bubble3 };
     }
 
     private void Start()
     {
-        tiempoTotal = PlayerPrefs.GetFloat("TiempoTotal", 0);
+        finalTime = PlayerPrefs.GetFloat("FinalTime", 0);
         StartCoroutine(MostrarPantallaFinal());
     }
 
     private IEnumerator MostrarPantallaFinal()
     {
-        // Mostrar tiempo total en UI
-        if (textoTiempo != null)
+        // Show time in UI
+        if (timeText != null)
         {
-            textoTiempo.text = "TIME: " + tiempoTotal.ToString("F2");
+            timeText.text = "TIME: " + finalTime.ToString("F2");
         }
+        
+        CalculatePointsFromTime();
 
-        // Calcular la puntuación basada en el tiempo
-        if (tiempoTotal < 148.295f)
+        pointsSound.Play();
+
+        // Show points from time
+        yield return StartCoroutine(ShowScoreProgressively(0, pointCountDuiration));
+
+        // Add points from bubbles
+        int cantBurbujas = PlayerPrefs.GetInt("NumberOfBubbles", 0);
+        yield return StartCoroutine(AddPointsPerBubble(cantBurbujas));
+
+        pointsSound.Pause();
+
+        // Show final grades
+        if (gradeText != null)
         {
-            puntuacionFinal = Mathf.FloorToInt((18759 - (3752.4f * Mathf.Log(tiempoTotal)))/10);
-        }
-        else
-        {
-            puntuacionFinal = 0;
-        }
-
-        audioPuntos.Play();
-
-        // Mostrar el puntaje del tiempo
-        yield return StartCoroutine(MostrarPuntuacionProgresivamente(0, tiempoPuntos));
-
-        // Agregar puntos por burbujas con pausas entre cada una
-        int cantBurbujas = PlayerPrefs.GetInt("CantidadBurbujas", 0);
-        yield return StartCoroutine(AgregarPuntosBurbujas(cantBurbujas));
-
-        audioPuntos.Pause();
-
-        // Mostrar la nota final
-        if (textoNota != null)
-        {
-            string notaFinal = NotaFinal(puntuacionFinal);
-            textoNota.text = notaFinal;
-            string nivel = PlayerPrefs.GetString("Nivel");
+            string notaFinal = NotaFinal(finalScore);
+            gradeText.text = notaFinal;
+            string nivel = PlayerPrefs.GetString("CurrentLevel");
             int maxScore = PlayerPrefs.GetInt("Score" + nivel, 0);
             float bestTime = PlayerPrefs.GetFloat("Time" + nivel, 0);
-            if (puntuacionFinal > maxScore) {
-                PlayerPrefs.SetInt("Score" + nivel, puntuacionFinal);
+            if (finalScore > maxScore) {
+                PlayerPrefs.SetInt("Score" + nivel, finalScore);
                 PlayerPrefs.SetString("Grade" + nivel, notaFinal);
             }
 
-            if (tiempoTotal != 0 && bestTime == 0) {
-                PlayerPrefs.SetFloat("Time" + nivel, tiempoTotal);
+            if (finalTime != 0 && bestTime == 0) {
+                PlayerPrefs.SetFloat("Time" + nivel, finalTime);
             }
-            if (tiempoTotal < bestTime) {
-                PlayerPrefs.SetFloat("Time" + nivel, tiempoTotal);
+            if (finalTime < bestTime) {
+                PlayerPrefs.SetFloat("Time" + nivel, finalTime);
             }
-            audioBurbuja.Play();
-            StartCoroutine(AnimacionEscala(textoNota.transform));
-            botonesHabilitados = true;
+            bubbleSound.Play();
+            StartCoroutine(ScaleAnimation(gradeText.transform));
+            enableButtons = true;
         }
     }
 
-    private IEnumerator AgregarPuntosBurbujas(int cantBurbujas)
+    private IEnumerator AddPointsPerBubble(int numberOfBubbles)
     {
-        for (int i = 0; i < cantBurbujas; i++)
+        for (int i = 0; i < numberOfBubbles; i++)
         {
             if (i < 2)
             {
-                ChangeImage(burbujas[i], filledBubble);
+                ChangeImage(bubblesImages[i], filledBubble);
             } 
             else 
             {
-                ChangeImage(burbujas[0], goldenBubble);
-                ChangeImage(burbujas[1], goldenBubble);
-                ChangeImage(burbujas[2], goldenBubble);
+                ChangeImage(bubblesImages[0], goldenBubble);
+                ChangeImage(bubblesImages[1], goldenBubble);
+                ChangeImage(bubblesImages[2], goldenBubble);
             }
 
-            int puntuacionPrevia = puntuacionFinal;
-            puntuacionFinal += puntuacionPorBurbuja;
+            int previousScore = finalScore;
+            finalScore += pointsPerBubble;
 
-            yield return StartCoroutine(MostrarPuntuacionProgresivamente(puntuacionPrevia, tiempoPuntosBurbujas));
+            yield return StartCoroutine(ShowScoreProgressively(previousScore, bubblePointCountDuration));
         }
     }
 
-    private IEnumerator MostrarPuntuacionProgresivamente(int puntuacionActual, float duracion)
+    private IEnumerator ShowScoreProgressively(int currentScore, float duration)
     {
-        if (textoPuntuacion != null)
+        if (scoreText != null)
         {
-            textoPuntuacion.text = $"SCORE: {puntuacionActual}";
+            scoreText.text = $"SCORE: {currentScore}";
         }
 
-        int puntuacionInicial = puntuacionActual;
-        int diferenciaPuntos = puntuacionFinal - puntuacionInicial;
-        float tiempoTranscurrido = 0f;
+        int initialScore = currentScore;
+        int pointDifference = finalScore - initialScore;
+        float elapsedTime = 0f;
 
-        while (tiempoTranscurrido < duracion)
+        while (elapsedTime < duration)
         {
-            tiempoTranscurrido += Time.deltaTime;
-            float progreso = Mathf.Clamp01(tiempoTranscurrido / duracion);
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / duration);
 
-            int puntuacionInterpolada = puntuacionInicial + Mathf.RoundToInt(diferenciaPuntos * progreso);
+            int interpolatedScore = initialScore + Mathf.RoundToInt(pointDifference * progress);
 
-            if (textoPuntuacion != null)
+            if (scoreText != null)
             {
-                textoPuntuacion.text = $"SCORE: {puntuacionInterpolada}";
+                scoreText.text = $"SCORE: {interpolatedScore}";
             }
 
             yield return null;
         }
 
-        if (textoPuntuacion != null)
+        if (scoreText != null)
         {
-            textoPuntuacion.text = $"SCORE: {puntuacionFinal}";
+            scoreText.text = $"SCORE: {finalScore}";
         }
     }
 
@@ -162,29 +147,27 @@ public class Score : MonoBehaviour
     {
         if (target != null)
         {
-            if (audioBurbuja != null)
+            if (bubbleSound != null)
             {
-                audioBurbuja.Play();
+                bubbleSound.Play();
             }
 
             target.sprite = sprite;
 
-            StartCoroutine(AnimacionEscala(target.transform));
-
+            StartCoroutine(ScaleAnimation(target.transform));
         }
     }
 
-    private IEnumerator AnimacionEscala(Transform target)
+    private IEnumerator ScaleAnimation(Transform target)
     {
-        if (target == null) yield break; // Evita errores si el target es nulo
+        if (target == null) yield break;
 
         Vector3 originalScale = target.localScale;
         Vector3 enlargedScale = originalScale * 1.2f;
 
         float duration = 0.2f;
         float elapsedTime = 0f;
-
-        // Agrandar
+        
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
@@ -193,10 +176,8 @@ public class Score : MonoBehaviour
             yield return null;
         }
 
-        // Resetear el tiempo
         elapsedTime = 0f;
 
-        // Reducir
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
@@ -208,103 +189,70 @@ public class Score : MonoBehaviour
         target.localScale = originalScale;
     }
 
-
     private string NotaFinal(int puntuacion)
     {
-        int nivel = PlayerPrefs.GetInt("Nivel");
-        Debug.Log("Calculando puntaje para el nivel "+ nivel);
-        switch (nivel)
+        if (puntuacion >= levelGrades.pointsForS)
         {
-            case 0:
-                puntuacionS = 1330;
-                puntuacionA = 1182;
-                puntuacionB = 1034;
-                puntuacionC = 738;
-                puntuacionD = 433;
-                puntuacionE = 147;
-                break;
-            case 1:
-                puntuacionS = 900;
-                puntuacionA = 800;
-                puntuacionB = 700;
-                puntuacionC = 500;
-                puntuacionD = 300;
-                puntuacionE = 100;
-                break;
-            case 2:
-                puntuacionS = 900;
-                puntuacionA = 800;
-                puntuacionB = 700;
-                puntuacionC = 500;
-                puntuacionD = 300;
-                puntuacionE = 100;
-                break;
-            case 3:
-                puntuacionS = 925;
-                puntuacionA = 822;
-                puntuacionB = 720;
-                puntuacionC = 513;
-                puntuacionD = 308;
-                puntuacionE = 102;
-                break;
-            case 4:
-                puntuacionS = 970;
-                puntuacionA = 862;
-                puntuacionB = 754;
-                puntuacionC = 538;
-                puntuacionD = 323;
-                puntuacionE = 107;
-                break;
-        }        
-        if (puntuacion >= puntuacionS)
-        {
-            return "S";  // Excelente
+            return "S";
         }
-        else if (puntuacion >= puntuacionA)
+        
+        if (puntuacion >= levelGrades.pointsForA)
         {
-            return "A";  // Muy Bien
+            return "A";
         }
-        else if (puntuacion >= puntuacionB)
+        
+        if (puntuacion >= levelGrades.pointsForB)
         {
-            return "B";  // Muy Bien
+            return "B";
         }
-        else if (puntuacion >= puntuacionC)
+        
+        if (puntuacion >= levelGrades.pointsForC)
         {
-            return "C";  // Bien
+            return "C";
         }
-        else if (puntuacion >= puntuacionD)
+        
+        if (puntuacion >= levelGrades.pointsForD)
         {
-            return "D";  // Suficiente
+            return "D";
         }
-        else if (puntuacion >= puntuacionE)
+
+        if (puntuacion >= levelGrades.pointsForE)
         {
-            return "E";  // Aprobado (en algunos sistemas podría ser suficiente para aprobar)
+            return "E";
+        }
+
+        return "F";
+    }
+
+    public void CalculatePointsFromTime()
+    {
+        if (finalTime < 148.295f)
+        {
+            finalScore = Mathf.FloorToInt((18759 - (3752.4f * Mathf.Log(finalTime)))/10);
         }
         else
         {
-            return "F";  // Reprobado
+            finalScore = 0;
         }
     }
-
-   
+    
     public void RestartGame()
     {
-        if (botonesHabilitados) {
+        if (enableButtons) {
             PlayerPrefs.SetInt("Paused", 0);
-            string lastLevel = PlayerPrefs.GetString("LastLevel", "Nivel1"); // Si no hay datos, vuelve a Nivel1
+            string lastLevel = PlayerPrefs.GetString("LastLevel", "Nivel1");
             SceneManager.LoadScene(lastLevel);
             Time.timeScale = 1f;
-            PlayerPrefs.SetInt("CantidadIntentos", 0);
+            PlayerPrefs.SetInt("Attempts", 0);
         }
         
     }
- 
-
+    
     public void LoadMainMenu()
     {
-        if (botonesHabilitados) {
+        if (enableButtons) {
             PlayerPrefs.SetInt("Paused", 0);
-            Time.timeScale = 1f;    // Restaura el tiempo antes de cargar la escena
+            Time.timeScale = 1f;
             GameObject prefMenu = GameObject.Find("UniquePrefab");
             Destroy(prefMenu);
             SceneManager.LoadScene("MenuNiveles");

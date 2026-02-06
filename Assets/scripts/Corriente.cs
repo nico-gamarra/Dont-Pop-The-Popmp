@@ -2,14 +2,15 @@ using UnityEngine;
 
 public class Corriente : MonoBehaviour
 {
-    [SerializeField] private Vector2 currentDirection = new Vector2(1, 0); // Dirección de la corriente
-    [SerializeField] private float currentStrength = 10f; // Fuerza de la corriente
-    [SerializeField] private GameObject player; // Referencia al jugador
-    private Rigidbody2D rb; // Referencia al Rigidbody2D del jugador
+    [SerializeField] private Vector2 currentDirection = new Vector2(1, 0);
+    [SerializeField] private float currentStrength = 10f; 
+    
+    private GameObject player;
+    private Rigidbody2D rb;
 
     private void Awake()
     {
-        // Obtiene el componente Rigidbody2D del jugador
+        player = GameObject.FindGameObjectWithTag("Player");
         rb = player.GetComponent<Rigidbody2D>();
     }
 
@@ -19,7 +20,6 @@ public class Corriente : MonoBehaviour
 
         if (collision.CompareTag("Player"))
         {
-            //Genera fuerza de desplazamiento en la burbuja cuando se encuentra en el area de la corriente
             rb.AddForce(currentDirection.normalized * currentStrength, ForceMode2D.Force);
         }
     }

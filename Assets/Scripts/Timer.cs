@@ -1,75 +1,69 @@
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Timer : MonoBehaviour
 {
-    public float tiempoEnSegundos = 0; // Contador de segundos
-    private bool contar = true; // Bandera para detener/reanudar el contador
-    private TMP_Text textoTiempo;  // Referencia a un objeto UI para mostrar el tiempo (opcional)
-    bool click;
+    public float timeInSeconds = 0;
+    private bool enableTimeCounting = true;
+    private TMP_Text timeText;
+    bool firstClickPressed;
 
     private void Awake()
     {
-        textoTiempo = GetComponent<TMP_Text>();
-        click = false;
+        timeText = GetComponent<TMP_Text>();
+        firstClickPressed = false;
     }
-
-
-
-    // Método principal del contador usando async/await
+    
     void Update()
     {
-        if (!click)
+        if (!firstClickPressed)
         {
-            contar = false;
+            enableTimeCounting = false;
         }
+        
         if (Input.GetMouseButton(0))
         {
-            click = true;
-            contar = true;
+            firstClickPressed = true;
+            enableTimeCounting = true;
         }
-            if (contar)
+        
+        if (enableTimeCounting)
+        {
+            timeInSeconds += Time.deltaTime;
+
+            if (timeText != null)
             {
-                tiempoEnSegundos += Time.deltaTime;
-
-                // Actualiza el texto de la UI si está configurado
-                if (textoTiempo != null)
-                {
-                    textoTiempo.text = (tiempoEnSegundos).ToString("F2");
-                }
+                timeText.text = (timeInSeconds).ToString("F2");
             }
+        }
     }
 
-    // Métodos para controlar el contador
-    public void PausarContador()
+    public void PauseTimer()
     {
-        contar = false;
+        enableTimeCounting = false;
     }
 
-    public void ReanudarContador()
+    public void ResumeTimer()
     {
-        contar = true;
+        enableTimeCounting = true;
     }
 
-    public void ReiniciarContador()
+    public void RestartTimer()
     {
-        tiempoEnSegundos = 0;
+        timeInSeconds = 0;
 
         // Opcional: actualiza la UI al reiniciar
-        if (textoTiempo != null)
+        if (timeText != null)
         {
-            textoTiempo.text = "0.00";
+            timeText.text = "0.00";
         }
     }
 
-    public void TerminarJuego()
+    public void EndGame()
     {
-        // Guarda el tiempo en GameData
-        PlayerPrefs.SetFloat("TiempoTotal", tiempoEnSegundos);
+        PlayerPrefs.SetFloat("finalTime", timeInSeconds);
 
-        // Carga la pantalla de puntuación
         SceneManager.LoadScene("Score");
     }
 }

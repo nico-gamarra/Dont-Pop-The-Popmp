@@ -3,13 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class Finish : MonoBehaviour
 {
-    [SerializeField] private GameObject timer;  // Referencia al GameObject que tiene el script Timer
+    [SerializeField] private GameObject timer;
 
-    private Timer timerScript;  // Variable para almacenar el componente Timer
+    private Timer timerScript;
 
     private void Start()
     {
-        // Obtener el componente Timer del GameObject
         timerScript = timer.GetComponent<Timer>();
     }
 
@@ -17,9 +16,8 @@ public class Finish : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            // Llamar a la función TerminarJuego() del componente Timer
             PlayerPrefs.SetString("LastLevel", SceneManager.GetActiveScene().name);
-            timerScript.TerminarJuego();
+            timerScript.EndGame();
             SceneManager.LoadScene("Score");
         }
     }

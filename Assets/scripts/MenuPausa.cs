@@ -7,7 +7,7 @@ public class MenuPausa : MonoBehaviour
 {
     [SerializeField] private Timer timer;
     [SerializeField] private SceneTransition transition;
-    public GameObject MenuPausaPanel; // Asigna el panel del menú de pausa en el Inspector
+    public GameObject MenuPausaPanel; // Asigna el panel del menï¿½ de pausa en el Inspector
     private bool isPaused = false;
     private bool preventClick = false; // Nueva bandera para evitar clics
     public string uniqueName = "UniquePrefab";
@@ -30,19 +30,19 @@ public class MenuPausa : MonoBehaviour
     public void PauseGame()
     {
         PlayerPrefs.SetInt("Paused", 1);
-        MenuPausaPanel.SetActive(true); // Activa el menú de pausa
+        MenuPausaPanel.SetActive(true); // Activa el menï¿½ de pausa
         Time.timeScale = 0f;            // Detiene el tiempo del juego
         isPaused = true;
-        timer.PausarContador();
+        timer.PauseTimer();
     }
 
     public void ResumeGame()
     {
         PlayerPrefs.SetInt("Paused", 0);
-        MenuPausaPanel.SetActive(false); // Desactiva el menú de pausa
+        MenuPausaPanel.SetActive(false); // Desactiva el menï¿½ de pausa
         Time.timeScale = 1f;             // Restaura el tiempo del juego
         isPaused = false;
-        timer.ReanudarContador();
+        timer.ResumeTimer();
 
         preventClick = true; // Activa la bandera para ignorar clics
         Invoke(nameof(ResetPreventClick), 0.1f); // Espera 0.1 segundos para permitir clics
@@ -64,7 +64,7 @@ public class MenuPausa : MonoBehaviour
         PlayerPrefs.SetInt(nombreEscena, 0);
         PlayerPrefs.Save();
         transition.StartGame("MenuNiveles");
-        timer.ReiniciarContador();
+        timer.RestartTimer();
     }
 
     public void RestartGame()
@@ -78,7 +78,7 @@ public class MenuPausa : MonoBehaviour
 
         Time.timeScale = 1f;
         isPaused = false;
-        timer.ReiniciarContador();
+        timer.RestartTimer();
         PlayerPrefs.SetInt("CantidadIntentos", 0);
         PlayerPrefs.Save();
     }
@@ -88,7 +88,7 @@ public class MenuPausa : MonoBehaviour
         return isPaused;
     }
 
-    public bool PreventClick() // Método para consultar el estado de preventClick
+    public bool PreventClick() // Mï¿½todo para consultar el estado de preventClick
     {
         return preventClick;
     }
